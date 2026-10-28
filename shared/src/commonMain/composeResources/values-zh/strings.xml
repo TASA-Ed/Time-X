@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Time X</string>
+    <string name="app_name">时间 X</string>
     <string name="menu">菜单</string>
     <string name="menu_file">文件</string>
     <string name="menu_help">帮助</string>
     <string name="menu_about">关于</string>
     <string name="menu_exit">退出</string>
-    <string name="about_title">关于 Time X</string>
-    <string name="about_message">Time X 用于显示精确时间。</string>
+    <string name="about_title">关于 时间 X</string>
+    <string name="about_message">时间 X 用于显示精确时间。</string>
     <string name="about_close">关闭</string>
 </resources>

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:inset="16dp">
-    <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:height="256dp"
-        android:width="256dp"
-        android:viewportWidth="256.0"
-        android:viewportHeight="256.0">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="200dp"
+    android:width="200dp"
+    android:viewportWidth="256.0"
+    android:viewportHeight="256.0">
+    <group
+        android:pivotX="128"
+        android:pivotY="128"
+        android:scaleX="0.65"
+        android:scaleY="0.65">
         <path
             android:fillColor="#00000000"
             android:pathData="M128,128m-96,0a96,96 0,1 1,192 0a96,96 0,1 1,-192 0"
@@ -14,5 +17,5 @@
         <path
             android:fillColor="#FF64748B"
             android:pathData="M128,56.02C132.42,56.02 136,59.6 136,64.02C136,81.18 136,120 136,120L120,120L120,64.02C120,59.6 123.58,56.02 128,56.02C128,56.02 128,56.02 128,56.02ZM176.98,120C179.1,120 181.14,120.84 182.64,122.34C184.14,123.84 184.98,125.88 184.98,128C184.98,128 184.98,128 184.98,128C184.98,130.12 184.14,132.16 182.64,133.66C181.14,135.16 179.1,136 176.98,136L136,136L136,120L176.98,120ZM136,120L136,136L127.95,136C123.56,136 120,132.44 120,128.05L120,120L136,120Z" />
-    </vector>
-</inset>
+    </group>
+</vector>
