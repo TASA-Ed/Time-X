@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time X</string>
+    <string name="menu">Menu</string>
+    <string name="menu_file">File</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_about">About</string>
+    <string name="menu_exit">Exit</string>
+    <string name="about_title">About Time X</string>
+    <string name="about_message">Time X shows the precise time.</string>
+    <string name="about_close">Close</string>
+</resources>
