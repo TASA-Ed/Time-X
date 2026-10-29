@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,13 +44,12 @@ fun App() {
     var menuExpanded by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
-    var theme by remember { mutableStateOf(AppTheme.White) }
-    var timeTextFormat by remember { mutableStateOf(TimeTextFormat.HoursMinutesSeconds) }
-    var customTimeFormat by remember { mutableStateOf(DefaultCustomTimeFormat) }
-    var timeTextSizeSp by remember { mutableStateOf(57f) }
+    val settingsStore = remember(context.applicationContext) { getSettingsStore(context) }
+    val storedSettings by settingsStore.settings.collectAsState(initial = null)
+    val settings = storedSettings ?: return
     var showTopBar by remember { mutableStateOf(true) }
 
-    TimeXTheme(theme = theme) {
+    TimeXTheme(theme = settings.theme) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
             topBar = {
@@ -107,23 +107,23 @@ fun App() {
         ) { innerPadding ->
             TimeScreen(
                 modifier = Modifier.padding(innerPadding),
-                timeTextSizeSp = timeTextSizeSp,
-                timeTextFormat = timeTextFormat,
-                customTimeFormat = customTimeFormat,
+                timeTextSizeSp = settings.timeTextSizeSp,
+                timeTextFormat = settings.timeTextFormat,
+                customTimeFormat = settings.customTimeFormat,
                 onTimeTextClick = { showTopBar = !showTopBar }
             )
         }
 
         if (showSettings) {
             SettingsDialog(
-                theme = theme,
-                onThemeSelected = { theme = it },
-                timeTextFormat = timeTextFormat,
-                customTimeFormat = customTimeFormat,
-                onTimeTextFormatChanged = { timeTextFormat = it },
-                onCustomTimeFormatChanged = { customTimeFormat = it },
-                timeTextSizeSp = timeTextSizeSp,
-                onTimeTextSizeChanged = { timeTextSizeSp = it },
+                theme = settings.theme,
+                onThemeSelected = { settingsStore.setTheme(it) },
+                timeTextFormat = settings.timeTextFormat,
+                customTimeFormat = settings.customTimeFormat,
+                onTimeTextFormatChanged = { settingsStore.setTimeTextFormat(it) },
+                onCustomTimeFormatChanged = { settingsStore.setCustomTimeFormat(it) },
+                timeTextSizeSp = settings.timeTextSizeSp,
+                onTimeTextSizeChanged = { settingsStore.setTimeTextSize(it) },
                 onDismissRequest = { showSettings = false },
             )
         }
