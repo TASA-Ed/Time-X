@@ -8,5 +8,12 @@
     <string name="menu_exit">退出</string>
     <string name="about_title">关于 时间 X</string>
     <string name="about_message">时间 X 用于显示精确时间。</string>
+    <string name="menu_settings">设置</string>
+    <string name="settings_theme_title">主题</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_white">白色</string>
+    <string name="settings_theme_black">黑色</string>
+    <string name="settings_theme_gray">灰色</string>
+    <string name="settings_theme_light_gray">淡灰色</string>
     <string name="about_close">关闭</string>
 </resources>

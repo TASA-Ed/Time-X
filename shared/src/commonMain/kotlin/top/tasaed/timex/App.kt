@@ -68,6 +68,9 @@ fun TimeScreen(modifier: Modifier = Modifier) {
 fun AboutDialog(onDismissRequest: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurface,
         title = { Text(stringResource(Res.string.about_title)) },
         text = { Text(stringResource(Res.string.about_message)) },
         confirmButton = {

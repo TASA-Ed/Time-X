@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":shared"))
 
     implementation(compose.desktop.currentOs)
+    implementation(libs.compose.material3)
     implementation(libs.compose.components.resources)
     implementation(libs.kotlinx.coroutinesSwing)
 

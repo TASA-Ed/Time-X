@@ -9,4 +9,11 @@
     <string name="about_title">About Time X</string>
     <string name="about_message">Time X shows the precise time.</string>
     <string name="about_close">Close</string>
+    <string name="menu_settings">Settings</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_theme_white">White</string>
+    <string name="settings_theme_black">Black</string>
+    <string name="settings_theme_gray">Gray</string>
+    <string name="settings_theme_light_gray">Light gray</string>
 </resources>

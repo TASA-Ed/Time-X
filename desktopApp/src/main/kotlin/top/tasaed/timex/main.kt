@@ -20,18 +20,30 @@ fun main() = application {
         icon = painterResource(Res.drawable.icon),
     ) {
         var showAbout by remember { mutableStateOf(false) }
+        var showSettings by remember { mutableStateOf(false) }
+        var theme by remember { mutableStateOf(AppTheme.White) }
 
-        Column(Modifier.fillMaxSize()) {
-            TimeXMenuBar(
-                onAbout = { showAbout = true },
-                onExit = ::exitApplication,
-            )
-            TimeXTheme {
-                TimeScreen(Modifier.weight(1f))
+        TimeXTheme(theme = theme) {
+            TimeXSurface(Modifier.fillMaxSize()) {
+                Column(Modifier.fillMaxSize()) {
+                    TimeXMenuBar(
+                        onSettings = { showSettings = true },
+                        onAbout = { showAbout = true },
+                        onExit = ::exitApplication,
+                    )
+                    TimeScreen(Modifier.weight(1f))
+                }
             }
-        }
-        if (showAbout) {
-            AboutDialog(onDismissRequest = { showAbout = false })
+            if (showSettings) {
+                SettingsDialog(
+                    theme = theme,
+                    onThemeSelected = { theme = it },
+                    onDismissRequest = { showSettings = false },
+                )
+            }
+            if (showAbout) {
+                AboutDialog(onDismissRequest = { showAbout = false })
+            }
         }
     }
 }

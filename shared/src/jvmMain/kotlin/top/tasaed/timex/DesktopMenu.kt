@@ -31,6 +31,7 @@ import androidx.compose.ui.window.FrameWindowScope
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
 import timex.shared.generated.resources.app_name
+import timex.shared.generated.resources.menu_settings
 import timex.shared.generated.resources.menu_about
 import timex.shared.generated.resources.menu_exit
 import timex.shared.generated.resources.menu_file
@@ -47,7 +48,7 @@ private enum class DesktopMenu {
 
 /** 使用 Compose 绘制的 Desktop 顶部菜单栏，避免依赖平台原生 MenuBar。 */
 @Composable
-fun FrameWindowScope.TimeXMenuBar(onAbout: () -> Unit, onExit: () -> Unit) {
+fun FrameWindowScope.TimeXMenuBar(onSettings: () -> Unit, onAbout: () -> Unit, onExit: () -> Unit) {
     var expandedMenu by remember { mutableStateOf<DesktopMenu?>(null) }
     val colors = MaterialTheme.colorScheme
 
@@ -71,14 +72,20 @@ fun FrameWindowScope.TimeXMenuBar(onAbout: () -> Unit, onExit: () -> Unit) {
                 },
             ) {
                 DropdownMenuItem(
-                    text = { Text(stringResource(Res.string.menu_exit)) },
+                    text = { Text(stringResource(Res.string.menu_settings), color = MaterialTheme.colorScheme.onSurface) },
+                    onClick = {
+                        expandedMenu = null
+                        onSettings()
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(Res.string.menu_exit), color = MaterialTheme.colorScheme.onSurface) },
                     onClick = {
                         expandedMenu = null
                         onExit()
                     },
                 )
             }
-            Spacer(Modifier.width(4.dp))
             MenuButton(
                 label = stringResource(Res.string.menu_help),
                 expanded = expandedMenu == DesktopMenu.Help,
@@ -87,7 +94,7 @@ fun FrameWindowScope.TimeXMenuBar(onAbout: () -> Unit, onExit: () -> Unit) {
                 },
             ) {
                 DropdownMenuItem(
-                    text = { Text(stringResource(Res.string.menu_about)) },
+                    text = { Text(stringResource(Res.string.menu_about), color = MaterialTheme.colorScheme.onSurface) },
                     onClick = {
                         expandedMenu = null
                         onAbout()
@@ -128,6 +135,7 @@ private fun MenuButton(
             expanded = expanded,
             onDismissRequest = onClick,
             modifier = Modifier.widthIn(min = 160.dp),
+            containerColor = colors.surface,
         ) {
             menuContent()
         }
