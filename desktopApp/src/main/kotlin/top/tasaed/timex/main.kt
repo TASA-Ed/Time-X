@@ -22,6 +22,7 @@ fun main() = application {
         var showAbout by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
         var theme by remember { mutableStateOf(AppTheme.White) }
+        var timeTextSizeSp by remember { mutableStateOf(57f) }
 
         TimeXTheme(theme = theme) {
             TimeXSurface(Modifier.fillMaxSize()) {
@@ -31,13 +32,15 @@ fun main() = application {
                         onAbout = { showAbout = true },
                         onExit = ::exitApplication,
                     )
-                    TimeScreen(Modifier.weight(1f))
+                    TimeScreen(Modifier.weight(1f), timeTextSizeSp)
                 }
             }
             if (showSettings) {
                 SettingsDialog(
                     theme = theme,
                     onThemeSelected = { theme = it },
+                    timeTextSizeSp = timeTextSizeSp,
+                    onTimeTextSizeChanged = { timeTextSizeSp = it },
                     onDismissRequest = { showSettings = false },
                 )
             }

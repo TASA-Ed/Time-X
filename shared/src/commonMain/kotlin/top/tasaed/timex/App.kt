@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import kotlin.time.Clock
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
@@ -28,7 +29,7 @@ import timex.shared.generated.resources.about_title
 
 /** 居中的当前系统时间，使用等宽字体，保证数字宽度一致。 */
 @Composable
-fun TimeScreen(modifier: Modifier = Modifier) {
+fun TimeScreen(modifier: Modifier = Modifier, timeTextSizeSp: Float = 57f) {
     var currentInstant by remember { mutableStateOf(Clock.System.now()) }
     val timeZone = remember { TimeZone.currentSystemDefault() }
     val monoFontFamily = rememberSourceFontFamily()
@@ -58,7 +59,10 @@ fun TimeScreen(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = displayTime,
-            style = MaterialTheme.typography.displayLarge.copy(fontFamily = monoFontFamily),
+            style = MaterialTheme.typography.displayLarge.copy(
+                fontFamily = monoFontFamily,
+                fontSize = timeTextSizeSp.sp,
+            ),
             textAlign = TextAlign.Center,
         )
     }

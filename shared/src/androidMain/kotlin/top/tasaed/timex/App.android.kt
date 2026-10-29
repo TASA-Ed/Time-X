@@ -38,6 +38,7 @@ fun App() {
     var showAbout by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
     var theme by remember { mutableStateOf(AppTheme.White) }
+    var timeTextSizeSp by remember { mutableStateOf(57f) }
 
     TimeXTheme(theme = theme) {
         Scaffold(
@@ -88,13 +89,15 @@ fun App() {
                 )
             },
         ) { innerPadding ->
-            TimeScreen(Modifier.padding(innerPadding))
+            TimeScreen(Modifier.padding(innerPadding), timeTextSizeSp)
         }
 
         if (showSettings) {
             SettingsDialog(
                 theme = theme,
                 onThemeSelected = { theme = it },
+                timeTextSizeSp = timeTextSizeSp,
+                onTimeTextSizeChanged = { timeTextSizeSp = it },
                 onDismissRequest = { showSettings = false },
             )
         }

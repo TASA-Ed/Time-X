@@ -15,6 +15,11 @@
     <string name="settings_theme_black">黑色</string>
     <string name="settings_theme_gray">灰色</string>
     <string name="settings_theme_light_gray">淡灰色</string>
+    <string name="settings_time_size_title">时间文字大小</string>
+    <string name="settings_time_size_slider">滑动调整（1–400 sp）</string>
+    <string name="settings_time_size_custom">自定义大小（无上限）</string>
+    <string name="settings_time_size_suffix">sp</string>
+    <string name="settings_time_size_invalid">请输入大于 0 的数字。</string>
     <string name="menu_landscape">切换横屏</string>
     <string name="about_close">关闭</string>
 </resources>

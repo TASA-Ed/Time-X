@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 actual fun SettingsDialog(
     theme: AppTheme,
     onThemeSelected: (AppTheme) -> Unit,
+    timeTextSizeSp: Float,
+    onTimeTextSizeChanged: (Float) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     ModalBottomSheet(
@@ -16,6 +18,11 @@ actual fun SettingsDialog(
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
         contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
     ) {
-        SettingsContent(theme = theme, onThemeSelected = onThemeSelected)
+        SettingsContent(
+            theme = theme,
+            onThemeSelected = onThemeSelected,
+            timeTextSizeSp = timeTextSizeSp,
+            onTimeTextSizeChanged = onTimeTextSizeChanged,
+        )
     }
 }

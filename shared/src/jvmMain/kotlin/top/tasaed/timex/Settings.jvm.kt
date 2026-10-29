@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 actual fun SettingsDialog(
     theme: AppTheme,
     onThemeSelected: (AppTheme) -> Unit,
+    timeTextSizeSp: Float,
+    onTimeTextSizeChanged: (Float) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     AlertDialog(
@@ -14,7 +16,14 @@ actual fun SettingsDialog(
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
         titleContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
         textContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
-        text = { SettingsContent(theme = theme, onThemeSelected = onThemeSelected) },
+        text = {
+            SettingsContent(
+                theme = theme,
+                onThemeSelected = onThemeSelected,
+                timeTextSizeSp = timeTextSizeSp,
+                onTimeTextSizeChanged = onTimeTextSizeChanged,
+            )
+        },
         confirmButton = {},
     )
 }

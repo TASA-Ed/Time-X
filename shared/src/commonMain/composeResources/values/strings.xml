@@ -17,4 +17,9 @@
     <string name="settings_theme_gray">Gray</string>
     <string name="settings_theme_light_gray">Light gray</string>
     <string name="menu_landscape">Switch to landscape</string>
+    <string name="settings_time_size_title">Time text size</string>
+    <string name="settings_time_size_slider">Slider (1–400 sp)</string>
+    <string name="settings_time_size_custom">Custom size (no upper limit)</string>
+    <string name="settings_time_size_suffix">sp</string>
+    <string name="settings_time_size_invalid">Enter a positive number.</string>
 </resources>
