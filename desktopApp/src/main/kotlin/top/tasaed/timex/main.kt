@@ -25,20 +25,24 @@ fun main() = application {
         var timeTextFormat by remember { mutableStateOf(TimeTextFormat.HoursMinutesSeconds) }
         var customTimeFormat by remember { mutableStateOf(DefaultCustomTimeFormat) }
         var timeTextSizeSp by remember { mutableStateOf(57f) }
+        var showTopBar by remember { mutableStateOf(true) }
 
         TimeXTheme(theme = theme) {
             TimeXSurface(Modifier.fillMaxSize()) {
                 Column(Modifier.fillMaxSize()) {
-                    TimeXMenuBar(
-                        onSettings = { showSettings = true },
-                        onAbout = { showAbout = true },
-                        onExit = ::exitApplication,
-                    )
+                    if (showTopBar) {
+                        TimeXMenuBar(
+                            onSettings = { showSettings = true },
+                            onAbout = { showAbout = true },
+                            onExit = ::exitApplication,
+                        )
+                    }
                     TimeScreen(
                         modifier = Modifier.weight(1f),
                         timeTextSizeSp = timeTextSizeSp,
                         timeTextFormat = timeTextFormat,
                         customTimeFormat = customTimeFormat,
+                        onTimeTextClick = { showTopBar = !showTopBar }
                     )
                 }
             }

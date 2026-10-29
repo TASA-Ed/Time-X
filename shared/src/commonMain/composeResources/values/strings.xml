@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Time X</string>
+    <string name="time_copied">Time copied to clipboard</string>
     <string name="menu">Menu</string>
     <string name="menu_file">File</string>
     <string name="menu_help">Help</string>

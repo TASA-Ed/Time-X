@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">时间 X</string>
+    <string name="time_copied">时间已复制到剪贴板</string>
     <string name="menu">菜单</string>
     <string name="menu_file">文件</string>
     <string name="menu_help">帮助</string>

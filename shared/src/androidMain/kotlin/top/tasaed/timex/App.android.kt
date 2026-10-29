@@ -47,11 +47,13 @@ fun App() {
     var timeTextFormat by remember { mutableStateOf(TimeTextFormat.HoursMinutesSeconds) }
     var customTimeFormat by remember { mutableStateOf(DefaultCustomTimeFormat) }
     var timeTextSizeSp by remember { mutableStateOf(57f) }
+    var showTopBar by remember { mutableStateOf(true) }
 
     TimeXTheme(theme = theme) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
             topBar = {
+                if (showTopBar) {
                 TopAppBar(
                     title = { Text(stringResource(Res.string.app_name)) },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -74,9 +76,9 @@ fun App() {
                                 text = { Text(stringResource(Res.string.menu_landscape)) },
                                 onClick = {
                                     menuExpanded = false
-                                    val isLandscape = configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE
+                                    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
                                     if (isLandscape) {
-                                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                                     } else {
                                         // 当前是竖屏，切换为横屏
                                         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -100,6 +102,7 @@ fun App() {
                         }
                     },
                 )
+                }
             },
         ) { innerPadding ->
             TimeScreen(
@@ -107,6 +110,7 @@ fun App() {
                 timeTextSizeSp = timeTextSizeSp,
                 timeTextFormat = timeTextFormat,
                 customTimeFormat = customTimeFormat,
+                onTimeTextClick = { showTopBar = !showTopBar }
             )
         }
 

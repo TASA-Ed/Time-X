@@ -128,8 +128,6 @@ private fun MenuButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = label, color = contentColor, style = MaterialTheme.typography.labelLarge)
-            Spacer(Modifier.width(6.dp))
-            Text(text = "▾", color = contentColor, style = MaterialTheme.typography.labelLarge)
         }
         DropdownMenu(
             expanded = expanded,
