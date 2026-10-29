@@ -1,5 +1,7 @@
 package top.tasaed.timex
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
@@ -25,10 +28,12 @@ import timex.shared.generated.resources.ic_more_vert
 import timex.shared.generated.resources.menu
 import timex.shared.generated.resources.menu_about
 import timex.shared.generated.resources.menu_settings
+import timex.shared.generated.resources.menu_landscape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
+    val activity = LocalContext.current as? Activity
     var menuExpanded by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
@@ -56,6 +61,14 @@ fun App() {
                             onDismissRequest = { menuExpanded = false },
                             containerColor = MaterialTheme.colorScheme.surface,
                         ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(Res.string.menu_landscape)) },
+                                onClick = {
+                                    menuExpanded = false
+                                    if (activity?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                    else activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                },
+                            )
                             DropdownMenuItem(
                                 text = { Text(stringResource(Res.string.menu_settings)) },
                                 onClick = {

@@ -15,5 +15,6 @@
     <string name="settings_theme_black">黑色</string>
     <string name="settings_theme_gray">灰色</string>
     <string name="settings_theme_light_gray">淡灰色</string>
+    <string name="menu_landscape">切换横屏</string>
     <string name="about_close">关闭</string>
 </resources>
