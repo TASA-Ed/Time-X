@@ -57,13 +57,10 @@ fun TimeXSurface(
     )
 }
 
-private fun grayColorScheme() = lightColorScheme(
+private fun grayColorScheme() = darkColorScheme(
     background = Color(0xFF606060),
     surface = Color(0xFF686868),
     surfaceVariant = Color(0xFF7A7A7A),
-    onBackground = Color.White,
-    onSurface = Color.White,
-    onSurfaceVariant = Color(0xFFF0F0F0),
 )
 
 private fun lightGrayColorScheme() = lightColorScheme(
