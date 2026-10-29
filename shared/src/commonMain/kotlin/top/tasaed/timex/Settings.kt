@@ -34,6 +34,15 @@ import timex.shared.generated.resources.settings_theme_light_gray
 import timex.shared.generated.resources.settings_theme_system
 import timex.shared.generated.resources.settings_theme_title
 import timex.shared.generated.resources.settings_theme_white
+import timex.shared.generated.resources.settings_time_format_clock
+import timex.shared.generated.resources.settings_time_format_custom
+import timex.shared.generated.resources.settings_time_format_invalid
+import timex.shared.generated.resources.settings_time_format_localized
+import timex.shared.generated.resources.settings_time_format_pattern_help
+import timex.shared.generated.resources.settings_time_format_pattern_label
+import timex.shared.generated.resources.settings_time_format_title
+import timex.shared.generated.resources.settings_time_format_unix_milliseconds
+import timex.shared.generated.resources.settings_time_format_unix_seconds
 import timex.shared.generated.resources.settings_time_size_custom
 import timex.shared.generated.resources.settings_time_size_slider
 import timex.shared.generated.resources.settings_time_size_title
@@ -43,6 +52,14 @@ import timex.shared.generated.resources.settings_time_size_invalid
 private const val TimeTextSizeSliderMin = 1f
 private const val TimeTextSizeSliderMax = 400f
 
+
+private enum class TimeTextFormatMode {
+    HoursMinutesSeconds,
+    LocalizedDateTime,
+    UnixSeconds,
+    UnixMilliseconds,
+    Custom,
+}
 private enum class TimeTextSizeMode {
     Slider,
     Custom,
@@ -52,9 +69,26 @@ private enum class TimeTextSizeMode {
 fun SettingsContent(
     theme: AppTheme,
     onThemeSelected: (AppTheme) -> Unit,
+    timeTextFormat: TimeTextFormat,
+    customTimeFormat: String,
+    onTimeTextFormatChanged: (TimeTextFormat) -> Unit,
+    onCustomTimeFormatChanged: (String) -> Unit,
     timeTextSizeSp: Float,
     onTimeTextSizeChanged: (Float) -> Unit,
 ) {
+    var timeTextFormatMode by remember(timeTextFormat) {
+        mutableStateOf(
+            when (timeTextFormat) {
+                TimeTextFormat.HoursMinutesSeconds -> TimeTextFormatMode.HoursMinutesSeconds
+                TimeTextFormat.LocalizedDateTime -> TimeTextFormatMode.LocalizedDateTime
+                TimeTextFormat.UnixSeconds -> TimeTextFormatMode.UnixSeconds
+                TimeTextFormat.UnixMilliseconds -> TimeTextFormatMode.UnixMilliseconds
+                TimeTextFormat.Custom -> TimeTextFormatMode.Custom
+            },
+        )
+    }
+    var customTimeFormatText by remember { mutableStateOf(customTimeFormat) }
+    var customTimeFormatError by remember { mutableStateOf(false) }
     var timeTextSizeMode by remember {
         mutableStateOf(
             if (timeTextSizeSp in TimeTextSizeSliderMin..TimeTextSizeSliderMax) {
@@ -81,6 +115,90 @@ fun SettingsContent(
         ThemeOption(AppTheme.Black, theme, stringResource(Res.string.settings_theme_black), onThemeSelected)
         ThemeOption(AppTheme.Gray, theme, stringResource(Res.string.settings_theme_gray), onThemeSelected)
         ThemeOption(AppTheme.LightGray, theme, stringResource(Res.string.settings_theme_light_gray), onThemeSelected)
+
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = stringResource(Res.string.settings_time_format_title),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        TimeTextFormatOption(
+            mode = TimeTextFormatMode.HoursMinutesSeconds,
+            selected = timeTextFormatMode,
+            label = stringResource(Res.string.settings_time_format_clock),
+            onSelected = {
+                timeTextFormatMode = it
+                customTimeFormatError = false
+                onTimeTextFormatChanged(TimeTextFormat.HoursMinutesSeconds)
+            },
+        )
+        TimeTextFormatOption(
+            mode = TimeTextFormatMode.LocalizedDateTime,
+            selected = timeTextFormatMode,
+            label = stringResource(Res.string.settings_time_format_localized),
+            onSelected = {
+                timeTextFormatMode = it
+                customTimeFormatError = false
+                onTimeTextFormatChanged(TimeTextFormat.LocalizedDateTime)
+            },
+        )
+        TimeTextFormatOption(
+            mode = TimeTextFormatMode.UnixSeconds,
+            selected = timeTextFormatMode,
+            label = stringResource(Res.string.settings_time_format_unix_seconds),
+            onSelected = {
+                timeTextFormatMode = it
+                customTimeFormatError = false
+                onTimeTextFormatChanged(TimeTextFormat.UnixSeconds)
+            },
+        )
+        TimeTextFormatOption(
+            mode = TimeTextFormatMode.UnixMilliseconds,
+            selected = timeTextFormatMode,
+            label = stringResource(Res.string.settings_time_format_unix_milliseconds),
+            onSelected = {
+                timeTextFormatMode = it
+                customTimeFormatError = false
+                onTimeTextFormatChanged(TimeTextFormat.UnixMilliseconds)
+            },
+        )
+        TimeTextFormatOption(
+            mode = TimeTextFormatMode.Custom,
+            selected = timeTextFormatMode,
+            label = stringResource(Res.string.settings_time_format_custom),
+            onSelected = {
+                timeTextFormatMode = it
+                customTimeFormatError = false
+                onTimeTextFormatChanged(TimeTextFormat.Custom)
+            },
+        )
+        if (timeTextFormatMode == TimeTextFormatMode.Custom) {
+            OutlinedTextField(
+                value = customTimeFormatText,
+                onValueChange = { value ->
+                    customTimeFormatText = value
+                    if (isValidCustomTimeFormat(value)) {
+                        customTimeFormatError = false
+                        onCustomTimeFormatChanged(value)
+                        onTimeTextFormatChanged(TimeTextFormat.Custom)
+                    } else {
+                        customTimeFormatError = true
+                    }
+                },
+                label = { Text(stringResource(Res.string.settings_time_format_pattern_label)) },
+                singleLine = true,
+                isError = customTimeFormatError,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                supportingText = {
+                    Text(
+                        text = if (customTimeFormatError) {
+                            stringResource(Res.string.settings_time_format_invalid)
+                        } else {
+                            stringResource(Res.string.settings_time_format_pattern_help)
+                        },
+                    )
+                },
+            )
+        }
 
         Spacer(Modifier.height(24.dp))
         Text(
@@ -152,6 +270,29 @@ private fun formatTimeTextSize(value: Float): String =
     if (value == value.roundToInt().toFloat()) value.roundToInt().toString() else value.toString()
 
 @Composable
+private fun TimeTextFormatOption(
+    mode: TimeTextFormatMode,
+    selected: TimeTextFormatMode,
+    label: String,
+    onSelected: (TimeTextFormatMode) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelected(mode) }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = mode == selected,
+            onClick = { onSelected(mode) },
+            modifier = Modifier.size(48.dp),
+        )
+        Text(text = label, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
 private fun TimeTextSizeModeOption(
     mode: TimeTextSizeMode,
     selected: TimeTextSizeMode,
@@ -201,6 +342,10 @@ private fun ThemeOption(
 expect fun SettingsDialog(
     theme: AppTheme,
     onThemeSelected: (AppTheme) -> Unit,
+    timeTextFormat: TimeTextFormat,
+    customTimeFormat: String,
+    onTimeTextFormatChanged: (TimeTextFormat) -> Unit,
+    onCustomTimeFormatChanged: (String) -> Unit,
     timeTextSizeSp: Float,
     onTimeTextSizeChanged: (Float) -> Unit,
     onDismissRequest: () -> Unit,

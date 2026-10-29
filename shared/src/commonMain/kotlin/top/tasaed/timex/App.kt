@@ -19,8 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import kotlin.time.Clock
 import kotlinx.coroutines.delay
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
 import timex.shared.generated.resources.about_close
@@ -29,27 +27,30 @@ import timex.shared.generated.resources.about_title
 
 /** 居中的当前系统时间，使用等宽字体，保证数字宽度一致。 */
 @Composable
-fun TimeScreen(modifier: Modifier = Modifier, timeTextSizeSp: Float = 57f) {
+fun TimeScreen(
+    modifier: Modifier = Modifier,
+    timeTextSizeSp: Float = 57f,
+    timeTextFormat: TimeTextFormat = TimeTextFormat.HoursMinutesSeconds,
+    customTimeFormat: String = DefaultCustomTimeFormat,
+) {
     var currentInstant by remember { mutableStateOf(Clock.System.now()) }
-    val timeZone = remember { TimeZone.currentSystemDefault() }
     val monoFontFamily = rememberSourceFontFamily()
-    val displayTime by remember(timeZone) {
-        derivedStateOf {
-            val time = currentInstant.toLocalDateTime(timeZone).time
-            "${time.hour.toString().padStart(2, '0')}:" +
-                "${time.minute.toString().padStart(2, '0')}:" +
-                time.second.toString().padStart(2, '0')
-        }
+    val displayTime by remember(timeTextFormat, customTimeFormat) {
+        derivedStateOf { formatTimeText(currentInstant, timeTextFormat, customTimeFormat) }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(timeTextFormat) {
         while (true) {
             val now = Clock.System.now()
             currentInstant = now
 
-            // Recalculate after every update so the next update stays aligned to a whole second.
-            val millisUntilNextSecond = 1_000L - now.nanosecondsOfSecond / 1_000_000L
-            delay(millisUntilNextSecond)
+            if (timeTextFormat == TimeTextFormat.UnixMilliseconds) {
+                delay(updateIntervalMillis(timeTextFormat))
+            } else {
+                // Recalculate after every update so the next update stays aligned to a whole second.
+                val millisUntilNextSecond = 1_000L - now.nanosecondsOfSecond / 1_000_000L
+                delay(millisUntilNextSecond)
+            }
         }
     }
 

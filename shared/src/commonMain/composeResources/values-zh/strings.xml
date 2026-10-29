@@ -15,11 +15,20 @@
     <string name="settings_theme_black">黑色</string>
     <string name="settings_theme_gray">灰色</string>
     <string name="settings_theme_light_gray">淡灰色</string>
-    <string name="settings_time_size_title">时间文字大小</string>
-    <string name="settings_time_size_slider">滑动调整（1–400 sp）</string>
-    <string name="settings_time_size_custom">自定义大小（无上限）</string>
-    <string name="settings_time_size_suffix">sp</string>
-    <string name="settings_time_size_invalid">请输入大于 0 的数字。</string>
     <string name="menu_landscape">切换横屏</string>
     <string name="about_close">关闭</string>
+    <string name="settings_time_format_title">时间格式</string>
+    <string name="settings_time_format_clock">HH:mm:ss</string>
+    <string name="settings_time_format_localized">本地化日期时间</string>
+    <string name="settings_time_format_unix_seconds">Unix 时间戳（秒）</string>
+    <string name="settings_time_format_unix_milliseconds">Unix 时间戳（毫秒，警告: CPU 占用较高）</string>
+    <string name="settings_time_format_custom">自定义格式</string>
+    <string name="settings_time_format_pattern_label">标准时间格式</string>
+    <string name="settings_time_format_invalid">请输入有效的标准时间格式。</string>
+    <string name="settings_time_format_pattern_help">使用标准日期时间格式，例如 yyyy-MM-dd HH:mm:ss。</string>
+    <string name="settings_time_size_title">时间文字大小</string>
+    <string name="settings_time_size_slider">滑动调整</string>
+    <string name="settings_time_size_custom">自定义大小</string>
+    <string name="settings_time_size_suffix">sp</string>
+    <string name="settings_time_size_invalid">请输入大于 0 的数字。</string>
 </resources>

@@ -17,9 +17,18 @@
     <string name="settings_theme_gray">Gray</string>
     <string name="settings_theme_light_gray">Light gray</string>
     <string name="menu_landscape">Switch to landscape</string>
+    <string name="settings_time_format_title">Time format</string>
+    <string name="settings_time_format_clock">HH:mm:ss</string>
+    <string name="settings_time_format_localized">Localized date and time</string>
+    <string name="settings_time_format_unix_seconds">Unix timestamp (seconds)</string>
+    <string name="settings_time_format_unix_milliseconds">Unix timestamp (milliseconds, Warning: High CPU usage)</string>
+    <string name="settings_time_format_custom">Custom format</string>
+    <string name="settings_time_format_pattern_label">Standard time format</string>
+    <string name="settings_time_format_invalid">Enter a valid standard time format.</string>
+    <string name="settings_time_format_pattern_help">Uses the standard date/time pattern, for example yyyy-MM-dd HH:mm:ss.</string>
     <string name="settings_time_size_title">Time text size</string>
-    <string name="settings_time_size_slider">Slider (1–400 sp)</string>
-    <string name="settings_time_size_custom">Custom size (no upper limit)</string>
+    <string name="settings_time_size_slider">Slider</string>
+    <string name="settings_time_size_custom">Custom size</string>
     <string name="settings_time_size_suffix">sp</string>
     <string name="settings_time_size_invalid">Enter a positive number.</string>
 </resources>

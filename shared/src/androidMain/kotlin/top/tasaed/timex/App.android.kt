@@ -1,7 +1,10 @@
 package top.tasaed.timex
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
@@ -33,11 +37,15 @@ import timex.shared.generated.resources.menu_landscape
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
-    val activity = LocalContext.current as? Activity
+    val context = LocalContext.current
+    val activity = context.findActivity()
+    val configuration = LocalConfiguration.current
     var menuExpanded by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
     var showSettings by remember { mutableStateOf(false) }
     var theme by remember { mutableStateOf(AppTheme.White) }
+    var timeTextFormat by remember { mutableStateOf(TimeTextFormat.HoursMinutesSeconds) }
+    var customTimeFormat by remember { mutableStateOf(DefaultCustomTimeFormat) }
     var timeTextSizeSp by remember { mutableStateOf(57f) }
 
     TimeXTheme(theme = theme) {
@@ -66,8 +74,13 @@ fun App() {
                                 text = { Text(stringResource(Res.string.menu_landscape)) },
                                 onClick = {
                                     menuExpanded = false
-                                    if (activity?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                                    else activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                    val isLandscape = configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE
+                                    if (isLandscape) {
+                                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                    } else {
+                                        // 当前是竖屏，切换为横屏
+                                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                    }
                                 },
                             )
                             DropdownMenuItem(
@@ -89,13 +102,22 @@ fun App() {
                 )
             },
         ) { innerPadding ->
-            TimeScreen(Modifier.padding(innerPadding), timeTextSizeSp)
+            TimeScreen(
+                modifier = Modifier.padding(innerPadding),
+                timeTextSizeSp = timeTextSizeSp,
+                timeTextFormat = timeTextFormat,
+                customTimeFormat = customTimeFormat,
+            )
         }
 
         if (showSettings) {
             SettingsDialog(
                 theme = theme,
                 onThemeSelected = { theme = it },
+                timeTextFormat = timeTextFormat,
+                customTimeFormat = customTimeFormat,
+                onTimeTextFormatChanged = { timeTextFormat = it },
+                onCustomTimeFormatChanged = { customTimeFormat = it },
                 timeTextSizeSp = timeTextSizeSp,
                 onTimeTextSizeChanged = { timeTextSizeSp = it },
                 onDismissRequest = { showSettings = false },
@@ -106,4 +128,13 @@ fun App() {
             AboutDialog(onDismissRequest = { showAbout = false })
         }
     }
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
 }

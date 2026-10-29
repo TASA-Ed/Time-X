@@ -22,6 +22,8 @@ fun main() = application {
         var showAbout by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
         var theme by remember { mutableStateOf(AppTheme.White) }
+        var timeTextFormat by remember { mutableStateOf(TimeTextFormat.HoursMinutesSeconds) }
+        var customTimeFormat by remember { mutableStateOf(DefaultCustomTimeFormat) }
         var timeTextSizeSp by remember { mutableStateOf(57f) }
 
         TimeXTheme(theme = theme) {
@@ -32,13 +34,22 @@ fun main() = application {
                         onAbout = { showAbout = true },
                         onExit = ::exitApplication,
                     )
-                    TimeScreen(Modifier.weight(1f), timeTextSizeSp)
+                    TimeScreen(
+                        modifier = Modifier.weight(1f),
+                        timeTextSizeSp = timeTextSizeSp,
+                        timeTextFormat = timeTextFormat,
+                        customTimeFormat = customTimeFormat,
+                    )
                 }
             }
             if (showSettings) {
                 SettingsDialog(
                     theme = theme,
                     onThemeSelected = { theme = it },
+                    timeTextFormat = timeTextFormat,
+                    customTimeFormat = customTimeFormat,
+                    onTimeTextFormatChanged = { timeTextFormat = it },
+                    onCustomTimeFormatChanged = { customTimeFormat = it },
                     timeTextSizeSp = timeTextSizeSp,
                     onTimeTextSizeChanged = { timeTextSizeSp = it },
                     onDismissRequest = { showSettings = false },
