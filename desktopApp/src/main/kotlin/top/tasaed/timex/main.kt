@@ -64,6 +64,8 @@ private fun runApplication(settingsStore: SettingsStore) =
       var showAbout by remember { mutableStateOf(false) }
       var showLicenses by remember { mutableStateOf(false) }
       var showSettings by remember { mutableStateOf(false) }
+      var syncRequest by remember { mutableStateOf(0) }
+      var showTimeDifferenceRequest by remember { mutableStateOf(0) }
       val storedSettings by settingsStore.settings.collectAsState(initial = null)
       val settings = storedSettings ?: return@Window
       var showTopBar by remember { mutableStateOf(true) }
@@ -74,9 +76,12 @@ private fun runApplication(settingsStore: SettingsStore) =
             if (showTopBar) {
               TimeXMenuBar(
                 onSettings = { showSettings = true },
+                onSyncNow = { syncRequest++ },
+                onShowTimeDifference = { showTimeDifferenceRequest++ },
                 onAbout = { showAbout = true },
                 onOpenSourceLicenses = { showLicenses = true },
                 onExit = ::exitApplication,
+                showNetworkTime = settings.timeSourceMode == TimeSourceMode.Network,
               )
             }
             TimeScreen(
@@ -84,6 +89,10 @@ private fun runApplication(settingsStore: SettingsStore) =
               timeTextSizeSp = settings.timeTextSizeSp,
               timeTextFormat = settings.timeTextFormat,
               customTimeFormat = settings.customTimeFormat,
+              timeSourceMode = settings.timeSourceMode,
+              ntpServer = settings.ntpServer,
+              syncRequest = syncRequest,
+              showTimeDifferenceRequest = showTimeDifferenceRequest,
               onTimeTextClick = { showTopBar = !showTopBar },
             )
           }
@@ -98,6 +107,10 @@ private fun runApplication(settingsStore: SettingsStore) =
             onCustomTimeFormatChanged = { settingsStore.setCustomTimeFormat(it) },
             timeTextSizeSp = settings.timeTextSizeSp,
             onTimeTextSizeChanged = { settingsStore.setTimeTextSize(it) },
+            timeSourceMode = settings.timeSourceMode,
+            onTimeSourceModeChanged = { settingsStore.setTimeSourceMode(it) },
+            ntpServer = settings.ntpServer,
+            onNtpServerChanged = { settingsStore.setNtpServer(it) },
             onDismissRequest = { showSettings = false },
           )
         }

@@ -33,14 +33,18 @@ import timex.shared.generated.resources.menu_about
 import timex.shared.generated.resources.menu_exit
 import timex.shared.generated.resources.menu_file
 import timex.shared.generated.resources.menu_help
+import timex.shared.generated.resources.menu_network_time
 import timex.shared.generated.resources.menu_open_source_licenses
 import timex.shared.generated.resources.menu_settings
+import timex.shared.generated.resources.menu_sync_now
+import timex.shared.generated.resources.menu_time_difference
 
 /** 本地化的应用名称，供窗口标题等平台代码使用。 */
 @Composable fun appTitle(): String = stringResource(Res.string.app_name)
 
 private enum class DesktopMenu {
   File,
+  NetworkTime,
   Help,
 }
 
@@ -48,9 +52,12 @@ private enum class DesktopMenu {
 @Composable
 fun FrameWindowScope.TimeXMenuBar(
   onSettings: () -> Unit,
+  onSyncNow: () -> Unit,
+  onShowTimeDifference: () -> Unit,
   onAbout: () -> Unit,
   onOpenSourceLicenses: () -> Unit,
   onExit: () -> Unit,
+  showNetworkTime: Boolean,
 ) {
   var expandedMenu by remember { mutableStateOf<DesktopMenu?>(null) }
   val colors = MaterialTheme.colorScheme
@@ -93,6 +100,35 @@ fun FrameWindowScope.TimeXMenuBar(
           },
         )
       }
+      if (showNetworkTime) {
+        MenuButton(
+          label = stringResource(Res.string.menu_network_time),
+          expanded = expandedMenu == DesktopMenu.NetworkTime,
+          onClick = {
+            expandedMenu =
+              if (expandedMenu == DesktopMenu.NetworkTime) null else DesktopMenu.NetworkTime
+          },
+        ) {
+          DropdownMenuItem(
+            text = {
+              Text(stringResource(Res.string.menu_sync_now), color = colors.onSurface)
+            },
+            onClick = {
+              expandedMenu = null
+              onSyncNow()
+            },
+          )
+          DropdownMenuItem(
+            text = {
+              Text(stringResource(Res.string.menu_time_difference), color = colors.onSurface)
+            },
+            onClick = {
+              expandedMenu = null
+              onShowTimeDifference()
+            },
+          )
+        }
+      }
       MenuButton(
         label = stringResource(Res.string.menu_help),
         expanded = expandedMenu == DesktopMenu.Help,
@@ -102,7 +138,7 @@ fun FrameWindowScope.TimeXMenuBar(
       ) {
         DropdownMenuItem(
           text = {
-            Text(stringResource(Res.string.menu_about), color = MaterialTheme.colorScheme.onSurface)
+            Text(stringResource(Res.string.menu_about), color = colors.onSurface)
           },
           onClick = {
             expandedMenu = null
@@ -113,7 +149,7 @@ fun FrameWindowScope.TimeXMenuBar(
           text = {
             Text(
               stringResource(Res.string.menu_open_source_licenses),
-              color = MaterialTheme.colorScheme.onSurface,
+              color = colors.onSurface,
             )
           },
           onClick = {

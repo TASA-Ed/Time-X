@@ -44,6 +44,8 @@ import timex.shared.generated.resources.menu_exit
 import timex.shared.generated.resources.menu_landscape
 import timex.shared.generated.resources.menu_open_source_licenses
 import timex.shared.generated.resources.menu_settings
+import timex.shared.generated.resources.menu_sync_now
+import timex.shared.generated.resources.menu_time_difference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +80,8 @@ fun App() {
   var showAbout by remember { mutableStateOf(false) }
   var showLicenses by remember { mutableStateOf(false) }
   var showSettings by remember { mutableStateOf(false) }
+  var syncRequest by remember { mutableStateOf(0) }
+  var showTimeDifferenceRequest by remember { mutableStateOf(0) }
   val settingsStore = remember(context.applicationContext) { getSettingsStore(context) }
   val storedSettings by settingsStore.settings.collectAsState(initial = null)
   val settings = storedSettings ?: return
@@ -131,6 +135,22 @@ fun App() {
                     }
                   },
                 )
+                if (settings.timeSourceMode == TimeSourceMode.Network) {
+                  DropdownMenuItem(
+                    text = { Text(stringResource(Res.string.menu_sync_now)) },
+                    onClick = {
+                      menuExpanded = false
+                      syncRequest++
+                    },
+                  )
+                  DropdownMenuItem(
+                    text = { Text(stringResource(Res.string.menu_time_difference)) },
+                    onClick = {
+                      menuExpanded = false
+                      showTimeDifferenceRequest++
+                    },
+                  )
+                }
                 DropdownMenuItem(
                   text = { Text(stringResource(Res.string.menu_settings)) },
                   onClick = {
@@ -170,6 +190,10 @@ fun App() {
         timeTextSizeSp = settings.timeTextSizeSp,
         timeTextFormat = settings.timeTextFormat,
         customTimeFormat = settings.customTimeFormat,
+        timeSourceMode = settings.timeSourceMode,
+        ntpServer = settings.ntpServer,
+        syncRequest = syncRequest,
+        showTimeDifferenceRequest = showTimeDifferenceRequest,
         onTimeTextClick = { showTopBar = !showTopBar },
       )
     }
@@ -184,6 +208,10 @@ fun App() {
         onCustomTimeFormatChanged = { settingsStore.setCustomTimeFormat(it) },
         timeTextSizeSp = settings.timeTextSizeSp,
         onTimeTextSizeChanged = { settingsStore.setTimeTextSize(it) },
+        timeSourceMode = settings.timeSourceMode,
+        onTimeSourceModeChanged = { settingsStore.setTimeSourceMode(it) },
+        ntpServer = settings.ntpServer,
+        onNtpServerChanged = { settingsStore.setNtpServer(it) },
         onDismissRequest = { showSettings = false },
       )
     }

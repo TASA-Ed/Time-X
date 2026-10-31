@@ -31,6 +31,15 @@
     <string name="license_unicode_3_components">ICU</string>
     <string name="license_sil_1_1">SIL Open Font License 1.1</string>
     <string name="license_sil_1_1_components">Source Sans 3、Source Han Sans</string>
+    <string name="settings_time_source_title">时间来源</string>
+    <string name="settings_time_source_local">本地时间</string>
+    <string name="settings_time_source_network">网络时间（NTP）</string>
+    <string name="settings_ntp_server_title">NTP 服务器</string>
+    <string name="settings_ntp_server_custom">自定义服务器</string>
+    <string name="settings_ntp_server_label">服务器主机名或 IP 地址</string>
+    <string name="settings_ntp_server_help">通过 UDP 端口 123 查询服务器。</string>
+    <string name="settings_ntp_server_invalid">请输入不含空格的主机名。</string>
+    <string name="settings_ntp_server_apply">应用服务器</string>
     <string name="settings_time_format_title">时间格式</string>
     <string name="settings_time_format_clock">HH:mm:ss</string>
     <string name="settings_time_format_localized">本地化日期时间</string>
@@ -45,4 +54,12 @@
     <string name="settings_time_size_custom">自定义大小</string>
     <string name="settings_time_size_suffix">sp</string>
     <string name="settings_time_size_invalid">请输入大于 0 的数字。</string>
+    <string name="menu_network_time">网络时间</string>
+    <string name="menu_sync_now">立即同步时间</string>
+    <string name="menu_time_difference">时间差异</string>
+    <string name="time_difference_title">时间差异</string>
+    <string name="time_difference_unknown">暂无已记录的网络时间差异。</string>
+    <string name="time_difference_value">网络时间与本地时间的差异：%s</string>
+    <string name="time_difference_snackbar">网络时间与本地时间相差 %s</string>
+    <string name="time_sync_failed">网络时间同步失败。</string>
 </resources>

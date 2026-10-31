@@ -15,6 +15,10 @@ actual fun SettingsDialog(
   onCustomTimeFormatChanged: (String) -> Unit,
   timeTextSizeSp: Float,
   onTimeTextSizeChanged: (Float) -> Unit,
+  timeSourceMode: TimeSourceMode,
+  onTimeSourceModeChanged: (TimeSourceMode) -> Unit,
+  ntpServer: String,
+  onNtpServerChanged: (String) -> Unit,
   onDismissRequest: () -> Unit,
 ) {
   ModalBottomSheet(
@@ -30,6 +34,10 @@ actual fun SettingsDialog(
       onTimeTextFormatChanged = onTimeTextFormatChanged,
       onCustomTimeFormatChanged = onCustomTimeFormatChanged,
       timeTextSizeSp = timeTextSizeSp,
+      timeSourceMode = timeSourceMode,
+      onTimeSourceModeChanged = onTimeSourceModeChanged,
+      ntpServer = ntpServer,
+      onNtpServerChanged = onNtpServerChanged,
       onTimeTextSizeChanged = onTimeTextSizeChanged,
     )
   }

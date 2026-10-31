@@ -31,6 +31,8 @@ class SettingsStoreTest {
       store.setTimeTextFormat(TimeTextFormat.Custom)
       store.setCustomTimeFormat("yyyy-MM-dd '时间' HH:mm:ss")
       repeat(100) { store.setTimeTextSize(it + 1f) }
+      store.setTimeSourceMode(TimeSourceMode.Network)
+      store.setNtpServer("clock.example.net")
       store.setTimeTextSize(512.5f)
       store.awaitPendingWrites()
       storeJob.cancelAndJoin()
@@ -43,6 +45,8 @@ class SettingsStoreTest {
           timeTextFormat = TimeTextFormat.Custom,
           customTimeFormat = "yyyy-MM-dd '时间' HH:mm:ss",
           timeTextSizeSp = 512.5f,
+          timeSourceMode = TimeSourceMode.Network,
+          ntpServer = "clock.example.net",
         ),
         restored,
       )

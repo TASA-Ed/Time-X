@@ -40,6 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -60,6 +65,11 @@ import timex.shared.generated.resources.license_unicode_3
 import timex.shared.generated.resources.license_unicode_3_components
 import timex.shared.generated.resources.licenses_title
 import timex.shared.generated.resources.time_copied
+import timex.shared.generated.resources.time_difference_snackbar
+import timex.shared.generated.resources.time_difference_title
+import timex.shared.generated.resources.time_difference_unknown
+import timex.shared.generated.resources.time_difference_value
+import timex.shared.generated.resources.time_sync_failed
 
 /** 居中的当前系统时间，使用等宽字体，保证数字宽度一致。 */
 @Composable
@@ -68,9 +78,17 @@ fun TimeScreen(
   timeTextSizeSp: Float = 57f,
   timeTextFormat: TimeTextFormat = TimeTextFormat.HoursMinutesSeconds,
   customTimeFormat: String = DefaultCustomTimeFormat,
+  timeSourceMode: TimeSourceMode = TimeSourceMode.Local,
+  ntpServer: String = DefaultNtpServer,
+  syncRequest: Int = 0,
+  showTimeDifferenceRequest: Int = 0,
   onTimeTextClick: () -> Unit = {},
 ) {
   var currentInstant by remember { mutableStateOf(Clock.System.now()) }
+  var lastTimeDifference by remember { mutableStateOf<Duration?>(null) }
+  var showTimeDifference by remember { mutableStateOf(false) }
+  var handledSyncRequest by remember { mutableStateOf(0) }
+  var hasCompletedInitialSync by remember { mutableStateOf(false) }
   val monoFontFamily = rememberSourceFontFamily()
   val displayTime by
     remember(timeTextFormat, customTimeFormat) {
@@ -80,6 +98,10 @@ fun TimeScreen(
   val coroutineScope = rememberCoroutineScope()
   val snackbarHostState = remember { SnackbarHostState() }
   val copiedMessage = stringResource(Res.string.time_copied)
+  val timeDifferenceSnackbarTemplate = stringResource(Res.string.time_difference_snackbar)
+  val timeDifferenceTemplate = stringResource(Res.string.time_difference_value)
+  val timeDifferenceUnknown = stringResource(Res.string.time_difference_unknown)
+  val timeSyncFailedMessage = stringResource(Res.string.time_sync_failed)
   val copyCurrentTime: () -> Unit = {
     coroutineScope.launch {
       clipboard.setClipEntry(createPlainTextClipEntry(displayTime))
@@ -88,16 +110,67 @@ fun TimeScreen(
   }
   val latestCopyCurrentTime = rememberUpdatedState(copyCurrentTime)
 
-  LaunchedEffect(timeTextFormat) {
+  LaunchedEffect(showTimeDifferenceRequest) {
+    if (showTimeDifferenceRequest > 0) {
+      showTimeDifference = true
+    }
+  }
+
+  LaunchedEffect(timeTextFormat, timeSourceMode, ntpServer, syncRequest) {
+    val isManualSync = syncRequest != handledSyncRequest
+    val shouldShowSyncFeedback = isManualSync || !hasCompletedInitialSync
+    handledSyncRequest = syncRequest
+
+    var clockOffset = Duration.ZERO
+    var hasNetworkTime = false
+    var nextSyncAt = TimeSource.Monotonic.markNow()
+    var syncJob: Job? = null
+
     while (true) {
       val now = Clock.System.now()
-      currentInstant = now
+      currentInstant =
+        if (timeSourceMode == TimeSourceMode.Network && hasNetworkTime) {
+          now + clockOffset
+        } else {
+          now
+        }
+
+      val monotonicNow = TimeSource.Monotonic.markNow()
+      if (
+        timeSourceMode == TimeSourceMode.Network &&
+          monotonicNow - nextSyncAt >= Duration.ZERO &&
+          syncJob?.isActive != true
+      ) {
+        nextSyncAt = monotonicNow + 60.seconds
+        syncJob = launch {
+          try {
+            val difference = queryNtpTimeDifference(ntpServer)
+            clockOffset = difference
+            lastTimeDifference = difference
+            hasNetworkTime = true
+            nextSyncAt = TimeSource.Monotonic.markNow() + 60.seconds
+            if (shouldShowSyncFeedback) {
+              snackbarHostState.showSnackbar(
+                timeDifferenceSnackbarTemplate.replace("%s", formatTimeDifference(difference)),
+              )
+            }
+            hasCompletedInitialSync = true
+          } catch (cancellation: CancellationException) {
+            throw cancellation
+          } catch (_: Exception) {
+            nextSyncAt = TimeSource.Monotonic.markNow() + 15.seconds
+            if (isManualSync) {
+              snackbarHostState.showSnackbar(timeSyncFailedMessage)
+            }
+          }
+        }
+      }
 
       if (timeTextFormat == TimeTextFormat.UnixMilliseconds) {
         delay(updateIntervalMillis(timeTextFormat))
       } else {
         // Recalculate after every update so the next update stays aligned to a whole second.
-        val millisUntilNextSecond = 1_000L - now.nanosecondsOfSecond / 1_000_000L
+        val millisUntilNextSecond = 1_000L - currentInstant.nanosecondsOfSecond / 1_000_000L
         delay(millisUntilNextSecond)
       }
     }
@@ -139,7 +212,32 @@ fun TimeScreen(
       modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
     )
   }
+
+  if (showTimeDifference) {
+    AlertDialog(
+      onDismissRequest = { showTimeDifference = false },
+      containerColor = MaterialTheme.colorScheme.surface,
+      titleContentColor = MaterialTheme.colorScheme.onSurface,
+      textContentColor = MaterialTheme.colorScheme.onSurface,
+      title = { Text(stringResource(Res.string.time_difference_title)) },
+      text = {
+        Text(
+          lastTimeDifference?.let {
+            timeDifferenceTemplate.replace("%s", formatTimeDifference(it))
+          } ?: timeDifferenceUnknown,
+        )
+      },
+      confirmButton = {
+        TextButton(onClick = { showTimeDifference = false }) {
+          Text(stringResource(Res.string.about_close))
+        }
+      },
+    )
+  }
 }
+
+private fun formatTimeDifference(difference: Duration): String =
+  if (difference >= Duration.ZERO) "+$difference" else difference.toString()
 
 @Composable
 fun AboutDialog(onDismissRequest: () -> Unit) {

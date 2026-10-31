@@ -31,6 +31,15 @@
     <string name="settings_theme_gray">Gray</string>
     <string name="settings_theme_light_gray">Light gray</string>
     <string name="menu_landscape">Switch to landscape</string>
+    <string name="settings_time_source_title">Time source</string>
+    <string name="settings_time_source_local">Local time</string>
+    <string name="settings_time_source_network">Network time (NTP)</string>
+    <string name="settings_ntp_server_title">NTP server</string>
+    <string name="settings_ntp_server_custom">Custom server</string>
+    <string name="settings_ntp_server_label">Server hostname or IP address</string>
+    <string name="settings_ntp_server_help">The server is queried over UDP port 123.</string>
+    <string name="settings_ntp_server_invalid">Enter a host without spaces.</string>
+    <string name="settings_ntp_server_apply">Apply server</string>
     <string name="settings_time_format_title">Time format</string>
     <string name="settings_time_format_clock">HH:mm:ss</string>
     <string name="settings_time_format_localized">Localized date and time</string>
@@ -45,4 +54,12 @@
     <string name="settings_time_size_custom">Custom size</string>
     <string name="settings_time_size_suffix">sp</string>
     <string name="settings_time_size_invalid">Enter a positive number.</string>
+    <string name="menu_network_time">Network time</string>
+    <string name="menu_sync_now">Sync time now</string>
+    <string name="menu_time_difference">Time difference</string>
+    <string name="time_difference_title">Time difference</string>
+    <string name="time_difference_unknown">No network time difference has been recorded.</string>
+    <string name="time_difference_value">The difference between network time and local time: %s</string>
+    <string name="time_difference_snackbar">Network time differs from local time by %s</string>
+    <string name="time_sync_failed">Network time synchronization failed.</string>
 </resources>

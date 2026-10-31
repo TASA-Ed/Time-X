@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,12 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
+import timex.shared.generated.resources.settings_ntp_server_apply
+import timex.shared.generated.resources.settings_ntp_server_custom
+import timex.shared.generated.resources.settings_ntp_server_help
+import timex.shared.generated.resources.settings_ntp_server_invalid
+import timex.shared.generated.resources.settings_ntp_server_label
+import timex.shared.generated.resources.settings_ntp_server_title
 import timex.shared.generated.resources.settings_theme_black
 import timex.shared.generated.resources.settings_theme_gray
 import timex.shared.generated.resources.settings_theme_light_gray
@@ -48,6 +55,9 @@ import timex.shared.generated.resources.settings_time_size_invalid
 import timex.shared.generated.resources.settings_time_size_slider
 import timex.shared.generated.resources.settings_time_size_suffix
 import timex.shared.generated.resources.settings_time_size_title
+import timex.shared.generated.resources.settings_time_source_local
+import timex.shared.generated.resources.settings_time_source_network
+import timex.shared.generated.resources.settings_time_source_title
 
 private const val TimeTextSizeSliderMin = 1f
 private const val TimeTextSizeSliderMax = 400f
@@ -65,6 +75,13 @@ private enum class TimeTextSizeMode {
   Custom,
 }
 
+private enum class NtpServerChoice {
+  Aliyun,
+  Cloudflare,
+  Pool,
+  Custom,
+}
+
 @Composable
 fun SettingsContent(
   theme: AppTheme,
@@ -75,7 +92,22 @@ fun SettingsContent(
   onCustomTimeFormatChanged: (String) -> Unit,
   timeTextSizeSp: Float,
   onTimeTextSizeChanged: (Float) -> Unit,
+  timeSourceMode: TimeSourceMode,
+  onTimeSourceModeChanged: (TimeSourceMode) -> Unit,
+  ntpServer: String,
+  onNtpServerChanged: (String) -> Unit,
 ) {
+  var selectedNtpServerChoice by
+    remember(ntpServer) {
+      mutableStateOf(ntpServerChoice(ntpServer))
+    }
+  var customNtpServer by
+    remember(ntpServer) {
+      mutableStateOf(if (ntpServer in BuiltInNtpServers) "" else ntpServer)
+    }
+
+  val customNtpServerInvalid = customNtpServer.isBlank() || customNtpServer.any(Char::isWhitespace)
+
   var timeTextFormatMode by
     remember(timeTextFormat) {
       mutableStateOf(
@@ -140,6 +172,101 @@ fun SettingsContent(
       stringResource(Res.string.settings_theme_light_gray),
       onThemeSelected,
     )
+
+    Spacer(Modifier.height(24.dp))
+    Text(
+      text = stringResource(Res.string.settings_time_source_title),
+      style = MaterialTheme.typography.titleLarge,
+    )
+    TimeSourceOption(
+      mode = TimeSourceMode.Local,
+      selected = timeSourceMode,
+      label = stringResource(Res.string.settings_time_source_local),
+      onSelected = onTimeSourceModeChanged,
+    )
+    TimeSourceOption(
+      mode = TimeSourceMode.Network,
+      selected = timeSourceMode,
+      label = stringResource(Res.string.settings_time_source_network),
+      onSelected = onTimeSourceModeChanged,
+    )
+    if (timeSourceMode == TimeSourceMode.Network) {
+      Spacer(Modifier.height(8.dp))
+      Text(
+        text = stringResource(Res.string.settings_ntp_server_title),
+        style = MaterialTheme.typography.titleMedium,
+      )
+      NtpServerOption(
+        host = DefaultNtpServer,
+        choice = NtpServerChoice.Aliyun,
+        selected = selectedNtpServerChoice,
+        onSelected = { choice, server ->
+          selectedNtpServerChoice = choice
+          onNtpServerChanged(server)
+        },
+      )
+      NtpServerOption(
+        host = "time.cloudflare.com",
+        choice = NtpServerChoice.Cloudflare,
+        selected = selectedNtpServerChoice,
+        onSelected = { choice, server ->
+          selectedNtpServerChoice = choice
+          onNtpServerChanged(server)
+        },
+      )
+      NtpServerOption(
+        host = "pool.ntp.org",
+        choice = NtpServerChoice.Pool,
+        selected = selectedNtpServerChoice,
+        onSelected = { choice, server ->
+          selectedNtpServerChoice = choice
+          onNtpServerChanged(server)
+        },
+      )
+      Row(
+        modifier =
+          Modifier.fillMaxWidth()
+            .clickable { selectedNtpServerChoice = NtpServerChoice.Custom }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        RadioButton(
+          selected = selectedNtpServerChoice == NtpServerChoice.Custom,
+          onClick = { selectedNtpServerChoice = NtpServerChoice.Custom },
+          modifier = Modifier.size(48.dp),
+        )
+        Text(
+          text = stringResource(Res.string.settings_ntp_server_custom),
+          modifier = Modifier.padding(start = 8.dp),
+        )
+      }
+      if (selectedNtpServerChoice == NtpServerChoice.Custom) {
+        OutlinedTextField(
+          value = customNtpServer,
+          onValueChange = { customNtpServer = it },
+          label = { Text(stringResource(Res.string.settings_ntp_server_label)) },
+          singleLine = true,
+          isError = customNtpServer.isNotBlank() && customNtpServerInvalid,
+          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+          supportingText = {
+            Text(
+              text =
+                if (customNtpServer.isNotBlank() && customNtpServerInvalid) {
+                  stringResource(Res.string.settings_ntp_server_invalid)
+                } else {
+                  stringResource(Res.string.settings_ntp_server_help)
+                },
+            )
+          },
+        )
+        TextButton(
+          onClick = { onNtpServerChanged(customNtpServer.trim()) },
+          enabled = !customNtpServerInvalid,
+        ) {
+          Text(stringResource(Res.string.settings_ntp_server_apply))
+        }
+      }
+    }
 
     Spacer(Modifier.height(24.dp))
     Text(
@@ -297,6 +424,55 @@ fun SettingsContent(
 private fun formatTimeTextSize(value: Float): String =
   if (value == value.roundToInt().toFloat()) value.roundToInt().toString() else value.toString()
 
+private fun ntpServerChoice(host: String): NtpServerChoice =
+  when (host) {
+    DefaultNtpServer -> NtpServerChoice.Aliyun
+    "time.cloudflare.com" -> NtpServerChoice.Cloudflare
+    "pool.ntp.org" -> NtpServerChoice.Pool
+    else -> NtpServerChoice.Custom
+  }
+
+@Composable
+private fun TimeSourceOption(
+  mode: TimeSourceMode,
+  selected: TimeSourceMode,
+  label: String,
+  onSelected: (TimeSourceMode) -> Unit,
+) {
+  Row(
+    modifier = Modifier.fillMaxWidth().clickable { onSelected(mode) }.padding(vertical = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    RadioButton(
+      selected = mode == selected,
+      onClick = { onSelected(mode) },
+      modifier = Modifier.size(48.dp),
+    )
+    Text(text = label, modifier = Modifier.padding(start = 8.dp))
+  }
+}
+
+@Composable
+private fun NtpServerOption(
+  host: String,
+  choice: NtpServerChoice,
+  selected: NtpServerChoice,
+  onSelected: (NtpServerChoice, String) -> Unit,
+) {
+  Row(
+    modifier =
+      Modifier.fillMaxWidth().clickable { onSelected(choice, host) }.padding(vertical = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    RadioButton(
+      selected = choice == selected,
+      onClick = { onSelected(choice, host) },
+      modifier = Modifier.size(48.dp),
+    )
+    Text(text = host, modifier = Modifier.padding(start = 8.dp))
+  }
+}
+
 @Composable
 private fun TimeTextFormatOption(
   mode: TimeTextFormatMode,
@@ -367,5 +543,9 @@ expect fun SettingsDialog(
   onCustomTimeFormatChanged: (String) -> Unit,
   timeTextSizeSp: Float,
   onTimeTextSizeChanged: (Float) -> Unit,
+  timeSourceMode: TimeSourceMode,
+  onTimeSourceModeChanged: (TimeSourceMode) -> Unit,
+  ntpServer: String,
+  onNtpServerChanged: (String) -> Unit,
   onDismissRequest: () -> Unit,
 )
