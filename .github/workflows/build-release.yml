@@ -45,9 +45,27 @@ jobs:
 
       - name: Print jpackage logs on failure
         if: failure()
-        shell: bash
+        shell: pwsh
         run: |
-          find desktopApp/build/compose/logs -type f -name "*.txt" -exec echo "=== {} ===" \; -exec cat {} \
+          Write-Host "================ JPACKAGE ARGS ================" -ForegroundColor Yellow
+          $argsFile = "desktopApp/build/compose/tmp/packageReleaseMsi.args.txt"
+          if (Test-Path $argsFile) {
+            Get-Content $argsFile
+          } else {
+            Write-Host "Args file not found."
+          }
+
+          Write-Host "`n================ JPACKAGE LOGS ================" -ForegroundColor Red
+          $logDir = "desktopApp/build/compose/logs"
+          if (Test-Path $logDir) {
+            Get-ChildItem -Path $logDir -Filter "*.txt" -Recurse | ForEach-Object {
+              Write-Host "--- File: $($_.FullName) ---" -ForegroundColor Cyan
+              Get-Content $_.FullName
+              Write-Host "-----------------------------------------`n"
+            }
+          } else {
+            Write-Host "Log directory not found."
+          }
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v7

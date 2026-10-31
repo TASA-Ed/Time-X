@@ -25,7 +25,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Deb)
             modules("jdk.unsupported")
             packageName = "Time X"
-            packageVersion = "10.0.0"
+            packageVersion = "10.0.1"
             description = "查看精准时间"
             vendor = "TASA-Ed"
 
