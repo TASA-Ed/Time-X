@@ -107,7 +107,7 @@ jobs:
         uses: android-actions/setup-android@v4
 
       - name: Install Android SDK platform
-        run: android sdk install platforms/android-37 build-tools/37.0.0 platform-tools
+        run: android sdk install platforms/android-37.0 build-tools/37.0.0 platform-tools
 
       - name: Set up Python
         uses: actions/setup-python@v7
