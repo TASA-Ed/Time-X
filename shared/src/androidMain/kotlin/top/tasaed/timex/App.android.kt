@@ -40,6 +40,7 @@ import timex.shared.generated.resources.app_name
 import timex.shared.generated.resources.ic_more_vert
 import timex.shared.generated.resources.menu
 import timex.shared.generated.resources.menu_about
+import timex.shared.generated.resources.menu_exit
 import timex.shared.generated.resources.menu_landscape
 import timex.shared.generated.resources.menu_open_source_licenses
 import timex.shared.generated.resources.menu_settings
@@ -149,6 +150,13 @@ fun App() {
                   onClick = {
                     menuExpanded = false
                     showLicenses = true
+                  },
+                )
+                DropdownMenuItem(
+                  text = { Text(stringResource(Res.string.menu_exit)) },
+                  onClick = {
+                    menuExpanded = false
+                    activity?.finish()
                   },
                 )
               }
