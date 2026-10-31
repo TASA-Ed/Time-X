@@ -77,6 +77,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Build Linux DEB
         run: ./gradlew :desktopApp:packageDeb --no-daemon
 
@@ -133,6 +136,9 @@ jobs:
           done
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/timex-release.jks"
           test -s "$RUNNER_TEMP/timex-release.jks"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Build signed Android APK
         env:

@@ -9,6 +9,7 @@ private var settingsStore: SettingsStore? = null
 
 @Synchronized
 internal fun getSettingsStore(context: Context): SettingsStore =
-    settingsStore ?: SettingsStore(context.applicationContext.settingsDataStore).also {
-        settingsStore = it
+  settingsStore
+    ?: SettingsStore(context.applicationContext.settingsDataStore).also {
+      settingsStore = it
     }
