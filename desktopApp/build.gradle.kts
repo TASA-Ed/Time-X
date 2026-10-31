@@ -26,7 +26,7 @@ compose.desktop {
             modules("jdk.unsupported")
             packageName = "Time X"
             packageVersion = "10.0.1"
-            description = "查看精准时间"
+            description = "Check accurate time"
             vendor = "TASA-Ed"
 
             windows {
