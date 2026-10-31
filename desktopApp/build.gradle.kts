@@ -40,6 +40,7 @@ compose.desktop {
 
             buildTypes.release.proguard {
                 isEnabled.set(true)
+                configurationFiles.from(project.file("compose-desktop.pro"))
             }
         }
     }

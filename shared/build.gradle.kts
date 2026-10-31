@@ -143,6 +143,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.kotlinx.coroutinesCore)
+            implementation(libs.ktor.network)
             implementation(libs.kotlinx.datetime)
         }
 
