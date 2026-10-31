@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import java.io.File
+import java.util.Locale
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.painterResource
 import timex.shared.generated.resources.Res
@@ -19,13 +20,29 @@ import timex.shared.generated.resources.icon
 private object DesktopApplication
 
 private fun settingsDirectory(): File {
-  // jpackage exposes the native launcher path even when started from another working directory.
-  val launcherPath = System.getProperty("jpackage.app-path")
-  if (!launcherPath.isNullOrBlank()) return File(launcherPath).absoluteFile.parentFile
+  val userHome = File(System.getProperty("user.home"))
+  val osName = System.getProperty("os.name").lowercase(Locale.ROOT)
 
-  // Gradle runs from classes; a standalone JAR stores its settings beside that JAR.
-  val location = File(DesktopApplication::class.java.protectionDomain.codeSource.location.toURI())
-  return if (location.isFile) location.parentFile else location
+  val directory =
+    when {
+      osName.contains("win") -> {
+        val appData =
+          System.getenv("APPDATA")?.takeIf { it.isNotBlank() }
+            ?: File(userHome, "AppData/Roaming").path
+        File(appData, "TASA-Ed/Time-X")
+      }
+      osName.contains("mac") || osName.contains("darwin") ->
+        File(userHome, "Library/Application Support/Time-X")
+      else -> {
+        val configHome =
+          System.getenv("XDG_CONFIG_HOME")?.takeIf { it.isNotBlank() }
+            ?: File(userHome, ".config").path
+        File(configHome, "Time-X")
+      }
+    }
+
+  directory.mkdirs()
+  return directory
 }
 
 fun main() {
