@@ -32,6 +32,10 @@ compose.desktop {
             linux {
                 iconFile.set(project.file("../shared/src/commonMain/composeResources/drawable/icon.png"))
             }
+
+            buildTypes.release.proguard {
+                isEnabled.set(true)
+            }
         }
     }
 }

@@ -48,6 +48,9 @@ android {
                 storePassword = releaseStorePassword.get()
                 keyAlias = releaseKeyAlias.get()
                 keyPassword = releaseKeyPassword.get()
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
             }
         }
     }
@@ -68,7 +71,9 @@ android {
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            isMinifyEnabled = false
+            optimization {
+                enable = true // Enables code and resource optimizations.
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

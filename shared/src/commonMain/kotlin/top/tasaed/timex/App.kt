@@ -192,7 +192,10 @@ fun AboutDialog(onDismissRequest: () -> Unit) {
 @Composable
 fun OpenSourceLicensesDialog(onDismissRequest: () -> Unit) {
   val uriHandler = LocalUriHandler.current
-  val openLicensesPage = fun(url: String): () -> Unit { return { uriHandler.openUri("https://opensource.org/licenses/" + url) } }
+  val openLicensesPage =
+    fun(url: String): () -> Unit {
+      return { uriHandler.openUri("https://opensource.org/licenses/" + url) }
+    }
   AlertDialog(
     onDismissRequest = onDismissRequest,
     containerColor = MaterialTheme.colorScheme.surface,

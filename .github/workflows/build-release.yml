@@ -41,7 +41,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Build Windows MSI
-        run: .\gradlew.bat :desktopApp:packageMsi --no-daemon
+        run: .\gradlew.bat :desktopApp:packageReleaseMsi --no-daemon
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v7
@@ -81,7 +81,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Linux DEB
-        run: ./gradlew :desktopApp:packageDeb --no-daemon
+        run: ./gradlew :desktopApp:packageReleaseDeb --no-daemon
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v7
