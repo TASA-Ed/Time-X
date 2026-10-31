@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: timex-windows
-          path: desktopApp/build/compose/binaries/main/msi/*.msi
+          path: desktopApp/build/compose/binaries/main-release/msi/*.msi
           if-no-files-found: error
 
   build-linux:
@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: timex-linux
-          path: desktopApp/build/compose/binaries/main/deb/*.deb
+          path: desktopApp/build/compose/binaries/main-release/deb/*.deb
           if-no-files-found: error
 
   build-android:
