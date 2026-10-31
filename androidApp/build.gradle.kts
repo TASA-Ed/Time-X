@@ -19,6 +19,17 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
+val releaseStoreFile = providers.environmentVariable("ANDROID_KEYSTORE_PATH")
+val releaseStorePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD")
+val releaseKeyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS")
+val releaseKeyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD")
+val hasReleaseSigning = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { it.isPresent }
+
 android {
     namespace = "top.tasaed.timex"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -27,21 +38,42 @@ android {
         applicationId = "top.tasaed.timex"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 10
+        versionName = "10.0.0"
+    }
+    if (hasReleaseSigning) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(releaseStoreFile.get())
+                storePassword = releaseStorePassword.get()
+                keyAlias = releaseKeyAlias.get()
+                keyPassword = releaseKeyPassword.get()
+            }
+        }
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+
+            excludes += "/META-INF/LICENSE*"
+            excludes += "/META-INF/NOTICE*"
+            excludes += "/META-INF/versions/*"
+
+            excludes += "/META-INF/*.version"
+            excludes += "DebugProbesKt.bin"
         }
     }
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            vcsInfo.include = false
         }
     }
     compileOptions {

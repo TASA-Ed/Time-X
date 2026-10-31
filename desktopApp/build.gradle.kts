@@ -24,7 +24,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Msi, TargetFormat.Deb)
             packageName = "top.tasaed.timex"
-            packageVersion = "1.0.0"
+            packageVersion = "10.0.0"
 
             windows {
                 iconFile.set(project.file("src/main/resources/icon.ico"))
