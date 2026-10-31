@@ -43,6 +43,12 @@ jobs:
       - name: Build Windows MSI
         run: .\gradlew.bat :desktopApp:packageReleaseMsi --no-daemon
 
+      - name: Print jpackage logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          find desktopApp/build/compose/logs -type f -name "*.txt" -exec echo "=== {} ===" \; -exec cat {} \
+
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v7
         with:
