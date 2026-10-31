@@ -10,6 +10,8 @@
     <string name="menu_exit">退出</string>
     <string name="about_title">关于 时间 X</string>
     <string name="about_message">时间 X 用于显示精确时间。</string>
+    <string name="about_version">版本：%s</string>
+    <string name="about_commit">Git 提交：%s</string>
     <string name="about_creator_label">制作者：</string>
     <string name="about_creator_name">TASA-Ed 工作室</string>
     <string name="about_github">GitHub 仓库：</string>

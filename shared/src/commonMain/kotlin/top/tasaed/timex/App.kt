@@ -50,11 +50,13 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import timex.shared.generated.resources.Res
 import timex.shared.generated.resources.about_close
+import timex.shared.generated.resources.about_commit
 import timex.shared.generated.resources.about_creator_label
 import timex.shared.generated.resources.about_creator_name
 import timex.shared.generated.resources.about_github
 import timex.shared.generated.resources.about_message
 import timex.shared.generated.resources.about_title
+import timex.shared.generated.resources.about_version
 import timex.shared.generated.resources.license_apache_2
 import timex.shared.generated.resources.license_apache_2_components
 import timex.shared.generated.resources.license_bsd_3_clause
@@ -251,6 +253,14 @@ fun AboutDialog(onDismissRequest: () -> Unit) {
     text = {
       Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(stringResource(Res.string.about_message))
+        Text(
+          text = stringResource(Res.string.about_version).replace("%s", BuildInfo.VERSION),
+          style = MaterialTheme.typography.bodySmall,
+        )
+        Text(
+          text = stringResource(Res.string.about_commit).replace("%s", BuildInfo.COMMIT_HASH),
+          style = MaterialTheme.typography.bodySmall,
+        )
         Spacer(Modifier.height(4.dp))
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
           Text(

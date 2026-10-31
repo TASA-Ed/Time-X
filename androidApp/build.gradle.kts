@@ -38,8 +38,8 @@ android {
         applicationId = "top.tasaed.timex"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 11
-        versionName = "10.0.1"
+        versionCode = 12
+        versionName = rootProject.version.toString()
     }
     if (hasReleaseSigning) {
         signingConfigs {

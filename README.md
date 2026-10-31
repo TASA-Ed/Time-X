@@ -6,6 +6,8 @@ Time X，时间系列的第十代产品。X 为罗马数字 10。
 
 你可以用它查看精确的时间。
 
+支持通过 NTP 服务器获取精准时间并展示，并自动计算与本地时间的差异。（默认关闭，需要设置里面开启！）
+
 ## 构建
 
 构建前安装 Python 与 fonttools：
@@ -35,6 +37,8 @@ Desktop 构建：
 
 ```shell
 ./gradlew run
-./gradlew packageUberJarForCurrentOS
-./gradlew packageDistributionForCurrentOS
+./gradlew packageMsi
+./gradlew packageDeb
+./gradlew packageReleaseMsi
+./gradlew packageReleaseDeb
 ```

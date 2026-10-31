@@ -10,6 +10,8 @@ plugins {
   id("com.diffplug.spotless") version "8.10.4"
 }
 
+version = "10.1.0"
+
 spotless {
   kotlin {
     target("**/*.kt")

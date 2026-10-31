@@ -10,6 +10,8 @@
     <string name="menu_exit">Exit</string>
     <string name="about_title">About Time X</string>
     <string name="about_message">Time X shows the precise time.</string>
+    <string name="about_version">Version: %s</string>
+    <string name="about_commit">Git commit: %s</string>
     <string name="about_creator_label">Made by:</string>
     <string name="about_creator_name">TASA-Ed Studio</string>
     <string name="about_github">GitHub Repo:</string>

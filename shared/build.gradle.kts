@@ -72,6 +72,44 @@ abstract class SubsetFonts : DefaultTask() {
     }
 }
 
+val generateBuildInfo = tasks.register("generateBuildInfo") {
+    group = "build"
+    description = "Generates app version and Git commit constants before Kotlin compilation."
+    val generatedDirectory = layout.buildDirectory.dir("generated/buildInfo/commonMain/kotlin")
+    val outputFile = generatedDirectory.map { it.file("top/tasaed/timex/BuildInfo.kt") }
+    val appVersion = rootProject.version.toString()
+    val escapedVersion =
+        appVersion.replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$")
+    val commitHash = providers.exec {
+        commandLine("git", "rev-parse", "HEAD")
+    }.standardOutput.asText.map { it.trim() }
+
+    inputs.property("version", appVersion)
+    inputs.property("commitHash", commitHash)
+    outputs.file(outputFile)
+
+    doLast {
+        val file = outputFile.get().asFile
+        file.parentFile.mkdirs()
+        file.writeText(
+            """
+            package top.tasaed.timex
+
+            internal object BuildInfo {
+                const val VERSION = "$escapedVersion"
+                const val COMMIT_HASH = "${commitHash.get()}"
+            }
+            """.trimIndent() + "\n",
+        )
+    }
+}
+
+tasks.configureEach {
+    if (name.startsWith("compile")) {
+        dependsOn(generateBuildInfo)
+    }
+}
+
 val subsetFonts = tasks.register<SubsetFonts>("subsetFonts") {
     group = "build"
     description = "Subsets Source Han Sans SC fonts using all localized resource text."
@@ -127,6 +165,9 @@ kotlin {
     }
     
     sourceSets {
+        commonMain {
+            kotlin.srcDir(layout.buildDirectory.dir("generated/buildInfo/commonMain/kotlin"))
+        }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
             implementation(libs.compose.uiToolingPreview)
